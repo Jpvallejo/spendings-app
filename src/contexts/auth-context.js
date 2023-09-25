@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from "react";
 import PropTypes from "prop-types";
 import jwtDecode from "jwt-decode";
-import { login } from "src/network/lib/login";
+import { login, register } from "src/network/lib/login";
 
 const HANDLERS = {
   INITIALIZE: "INITIALIZE",
@@ -80,12 +80,7 @@ export const AuthProvider = (props) => {
     }
 
     if (isAuthenticated) {
-      const user = {
-        id: "5e86809283e28b96d2d38537",
-        avatar: "/assets/avatars/avatar-anika-visser.png",
-        name: "Anika Visser",
-        email: "anika.visser@devias.io",
-      };
+      const user = jwtDecode(window.localStorage.getItem("token"));
 
       dispatch({
         type: HANDLERS.INITIALIZE,
@@ -113,12 +108,7 @@ export const AuthProvider = (props) => {
       console.error(err);
     }
 
-    const user = {
-      id: "5e86809283e28b96d2d38537",
-      avatar: "/assets/avatars/avatar-anika-visser.png",
-      name: "Anika Visser",
-      email: "anika.visser@devias.io",
-    };
+    const user = jwtDecode(window.localStorage.getItem("token"));
 
     dispatch({
       type: HANDLERS.SIGN_IN,
@@ -132,13 +122,8 @@ export const AuthProvider = (props) => {
         .then((response) => {
           window.sessionStorage.setItem("authenticated", "true");
           window.localStorage.setItem("token", response.data.data);
-          console.log(jwtDecode(response.data.data))
-          const user = {
-            id: "5e86809283e28b96d2d38537",
-            avatar: "/assets/avatars/avatar-anika-visser.png",
-            name: "Anika Visser",
-            email: "anika.visser@devias.io",
-          };
+          console.log(jwtDecode(response.data.data));
+          const user = jwtDecode(response.data.data);
           dispatch({
             type: HANDLERS.SIGN_IN,
             payload: user,
@@ -154,8 +139,24 @@ export const AuthProvider = (props) => {
     }
   };
 
-  const signUp = async (email, name, password) => {
-    throw new Error("Sign up is not implemented");
+  const signUp = async (email, name, password, profilePic) => {
+    try {
+      const response = await register({
+        email: email,
+        password: password,
+        name: name,
+        profilePic: profilePic,
+      })
+        .then((response) => {
+          return response;
+        })
+        .catch((err) => {
+          return err.response;
+        });
+      return response;
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const signOut = () => {

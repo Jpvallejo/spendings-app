@@ -17,9 +17,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "src/hooks/use-auth";
+import { useSearchParams } from "next/navigation";
 import { Layout as AuthLayout } from "src/layouts/auth/layout";
 
 const Page = () => {
+  const searchParams = useSearchParams();
+
+  const registered = searchParams.get("registered");
   const router = useRouter();
   const auth = useAuth();
   const [method, setMethod] = useState("email");
@@ -79,6 +83,11 @@ const Page = () => {
         >
           <div>
             <Stack spacing={1} sx={{ mb: 3 }}>
+              {registered === "true" && (
+                <Typography variant="h6">
+                  Your account was created successfully, please log in to continue
+                </Typography>
+              )}
               <Typography variant="h4">Login</Typography>
               <Typography color="text.secondary" variant="body2">
                 Don&apos;t have an account? &nbsp;
