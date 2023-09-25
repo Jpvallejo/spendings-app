@@ -1,7 +1,4 @@
 import PropTypes from "prop-types";
-import ComputerDesktopIcon from "@heroicons/react/24/solid/ComputerDesktopIcon";
-import DeviceTabletIcon from "@heroicons/react/24/solid/DeviceTabletIcon";
-import PhoneIcon from "@heroicons/react/24/solid/PhoneIcon";
 import {
   Box,
   Card,
@@ -13,6 +10,7 @@ import {
   useTheme,
 } from "@mui/material";
 import { Chart } from "src/components/chart";
+import { HeroIcon } from "src/components/HeroIcon";
 
 const useChartOptions = (labels, colors) => {
   const theme = useTheme();
@@ -58,26 +56,8 @@ const useChartOptions = (labels, colors) => {
   };
 };
 
-const iconMap = {
-  Desktop: (
-    <SvgIcon>
-      <ComputerDesktopIcon />
-    </SvgIcon>
-  ),
-  Tablet: (
-    <SvgIcon>
-      <DeviceTabletIcon />
-    </SvgIcon>
-  ),
-  Phone: (
-    <SvgIcon>
-      <PhoneIcon />
-    </SvgIcon>
-  ),
-};
-
 export const CategoriesChart = (props) => {
-  const { chartSeries, labels, sx, colors } = props;
+  const { chartSeries, labels, sx, colors, icons } = props;
   const chartOptions = useChartOptions(labels, colors);
 
   return (
@@ -93,8 +73,7 @@ export const CategoriesChart = (props) => {
           sx={{ mt: 2 }}
         >
           {chartSeries.map((item, index) => {
-            const label = labels[index];
-
+            const label = labels[index].to;
             return (
               <Box
                 key={label}
@@ -104,7 +83,11 @@ export const CategoriesChart = (props) => {
                   alignItems: "center",
                 }}
               >
-                {iconMap[label]}
+                {icons.length > 0 && (
+                  <SvgIcon>
+                    <HeroIcon icon={icons[index]} color="text-black-600" size={6} solid />
+                  </SvgIcon>
+                )}
                 <Typography sx={{ my: 1 }} variant="h6">
                   {label}
                 </Typography>

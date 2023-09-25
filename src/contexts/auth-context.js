@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, useRef } from "react";
 import PropTypes from "prop-types";
-import axios from "axios";
+import jwtDecode from "jwt-decode";
+import { login } from "src/network/lib/login";
 
 const HANDLERS = {
   INITIALIZE: "INITIALIZE",
@@ -127,11 +128,11 @@ export const AuthProvider = (props) => {
 
   const signIn = async (email, password) => {
     try {
-      const response = await axios
-        .post("http://localhost:4000/login", { email: email, password: password })
+      const response = await login({ email: email, password: password })
         .then((response) => {
           window.sessionStorage.setItem("authenticated", "true");
           window.localStorage.setItem("token", response.data.data);
+          console.log(jwtDecode(response.data.data))
           const user = {
             id: "5e86809283e28b96d2d38537",
             avatar: "/assets/avatars/avatar-anika-visser.png",
